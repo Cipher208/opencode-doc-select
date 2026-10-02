@@ -64,6 +64,10 @@ it by hand, add it to `plugin` in `~/.config/opencode/opencode.json`:
 
 Restart OpenCode afterwards — plugins load at startup.
 
+> The package is published from GitHub Actions through npm's trusted publishing
+> (OIDC), so there is no npm token in this repository. See
+> [CONTRIBUTING](CONTRIBUTING.md#releasing).
+
 ### Manual install
 
 Copy all five modules from `src/` into `~/.config/opencode/plugins/`:
