@@ -1,0 +1,35 @@
+{
+  "name": "opencode-doc-select",
+  "version": "0.1.0",
+  "description": "OpenCode plugin: open a file in a tmux pane and read back the text the user selected with the mouse.",
+  "type": "module",
+  "main": "src/plugin.ts",
+  "exports": {
+    ".": "./src/plugin.ts"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "tmux",
+    "terminal",
+    "mouse"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "@opencode-ai/plugin": "*"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "1.18.34",
+    "@types/bun": "^1.4.2",
+    "typescript": "^5.9.3"
+  }
+}
