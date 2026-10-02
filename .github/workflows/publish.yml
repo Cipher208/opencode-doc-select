@@ -19,14 +19,18 @@ permissions:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       # OIDC-аутентификация требует свежего npm; берём версию из реестра, а не
       # ту, что случайно оказалась в образе раннера.
@@ -34,7 +38,9 @@ jobs:
         run: npm install -g npm@latest && npm --version
 
       - name: install dependencies
-        run: npm install --no-audit --no-fund
+        # bun.lock is the committed lockfile; npm install would resolve versions
+        # afresh and could publish a dependency set nobody tested.
+        run: bun install --frozen-lockfile
 
       - name: guard - the tag must match package.json
         run: |
