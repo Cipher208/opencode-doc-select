@@ -7,6 +7,10 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [0.1.0] - 2026-10-02
 
+- Published as `@cipher208/opencode-doc-select`. The package is scoped: npm's
+  granular tokens can only be granted for scopes or existing packages, and a
+  scoped name is protected from being claimed by someone else later.
+
 ### Added
 
 - `doc_open` opens a file in a tmux pane with a line-number gutter.

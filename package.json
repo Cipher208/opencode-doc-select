@@ -1,5 +1,5 @@
 {
-  "name": "opencode-doc-select",
+  "name": "@cipher208/opencode-doc-select",
   "version": "0.1.0",
   "description": "OpenCode plugin: open a file in a tmux pane and read back the text the user selected with the mouse.",
   "type": "module",

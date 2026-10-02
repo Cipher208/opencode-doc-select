@@ -1,4 +1,4 @@
-# opencode-doc-select
+# @cipher208/opencode-doc-select
 
 > Your agent re-reads whole files because you cannot hand it a fragment.
 > Drag across the lines you mean in a tmux pane, release, and the agent gets
@@ -23,7 +23,7 @@ agent: doc_selection()
 Install it, then add one line to `~/.config/opencode/opencode.json`:
 
 ```json
-{ "plugin": ["opencode-doc-select"] }
+{ "plugin": ["@cipher208/opencode-doc-select"] }
 ```
 
 Restart OpenCode, ask the agent to open a file, drag over what you mean, release.
@@ -52,14 +52,14 @@ Two contracts that are not in the OpenCode documentation, both learned the hard 
 ## Install
 
 ```bash
-opencode plugin opencode-doc-select
+opencode plugin @cipher208/opencode-doc-select
 ```
 
 Add `-g` to install into the global config instead of the current project. To do
 it by hand, add it to `plugin` in `~/.config/opencode/opencode.json`:
 
 ```json
-{ "plugin": ["opencode-doc-select"] }
+{ "plugin": ["@cipher208/opencode-doc-select"] }
 ```
 
 Restart OpenCode afterwards — plugins load at startup.
