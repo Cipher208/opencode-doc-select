@@ -1,17 +1,25 @@
 name: publish
 
-# Публикация в npm выполняется на стороне GitHub: токен живёт в репозиторных
-# секретах и никогда не появляется ни на одной машине разработчика.
+# Публикация через OIDC (trusted publishing): токена нет вообще, npm выдаёт
+# GitHub Actions короткоживущие учётные данные по идентичности workflow.
+#
+# Требуется на npmjs.com: Package settings -> Trusted Publisher ->
+#   Organization or user : Cipher208
+#   Repository           : opencode-doc-select
+#   Workflow filename    : publish.yml
+#   Allowed actions      : allow npm publish
 on:
   release:
     types: [published]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write   # required for OIDC
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -20,14 +28,15 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      # OIDC-аутентификация требует свежего npm; берём версию из реестра, а не
+      # ту, что случайно оказалась в образе раннера.
+      - name: npm at a version that supports OIDC
+        run: npm install -g npm@latest && npm --version
 
       - name: install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: guard — the tag must match package.json
+      - name: guard - the tag must match package.json
         run: |
           TAG="${GITHUB_REF_NAME}"
           VERSION="$(node -p "require('./package.json').version")"
@@ -42,5 +51,3 @@ jobs:
 
       - name: publish
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

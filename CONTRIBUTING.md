@@ -44,3 +44,21 @@ test, it belongs in the source module or nowhere.
 2. Make sure `bun test` and `bun run typecheck` pass locally.
 3. Describe what was verified, not just what changed. A statement about how
    something behaves needs the measurement that supports it.
+
+## Releasing
+
+Releases are published to npm by GitHub Actions through OIDC — there is no npm
+token anywhere in this repository or in repository secrets. npm hands the
+workflow a short-lived credential derived from the workflow's identity.
+
+For a maintainer publishing a release:
+
+```bash
+# 1. bump the version and add a CHANGELOG entry, commit
+# 2. tag and push
+git tag v0.1.0 && git push origin master --tags
+# 3. create the release from the tag — the workflow runs on release: published
+```
+
+The workflow refuses to publish when the tag disagrees with `package.json`, and
+runs the tests and the typecheck first.
