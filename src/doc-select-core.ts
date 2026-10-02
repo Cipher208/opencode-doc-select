@@ -1,10 +1,10 @@
-// Чистая логика плагина выделения. Без терминала и без файловой системы —
-// всё, что можно проверить тестом, живёт здесь.
+// Pure logic of the selection plugin. No terminal, no filesystem -
+// everything testable lives here.
 
 export interface MouseEvent {
-  /** битовая маска кнопки из SGR-протокола: 0 — левая, 32 — перетаскивание */
+  /** SGR button bitmask: 0 = left, 32 = motion/drag */
   button: number
-  /** координаты терминала, как их шлёт SGR: с единицы */
+  /** Terminal coordinates as SGR reports them, one-based */
   x: number
   y: number
   action: "press" | "release" | "drag"
@@ -25,9 +25,9 @@ export function parseSgr(chunk: string): MouseEvent | null {
 }
 
 export interface Point {
-  /** номер строки с единицы */
+  /** Line number, one-based */
   line: number
-  /** колонка в строке с единицы */
+  /** Column within the line, one-based */
   col: number
 }
 
@@ -45,7 +45,7 @@ export function extractSelection(content: string, a: Point, b: Point): Selection
   const first = clamp(start.line, 1, lines.length)
   const last = clamp(end.line, 1, lines.length)
 
-  // колонки с единицы и включительны: отрезок [col-1, col)
+  // Columns are one-based and inclusive on the right: the half-open range [col-1, col)
   const from = clamp(start.col, 1, lines[first - 1].length + 1) - 1
   const to = clamp(end.col, 1, lines[last - 1].length + 1)
 
@@ -74,8 +74,9 @@ export interface Span {
 }
 
 /**
- * Собирает видимые строки панели: номер, разделитель, текст с подсветкой выделения.
- * Строки обрезаются по ширине окна, выделение переживает границы экрана.
+ * Builds the visible pane lines: number, separator, text with the selection
+ * highlighted. Lines are clipped to the window width, and a selection that
+ * starts above or ends below the viewport is still highlighted in the visible part.
  */
 export function formatViewport(
   lines: string[],

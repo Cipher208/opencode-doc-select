@@ -1,9 +1,9 @@
-// Пути к состоянию и корню конфигурации.
+// State file and config root locations.
 //
-// Ничего не зашито: пакет ставится на машину с другим $HOME и, возможно, с
-// нестандартными XDG-переменными. Если ни $HOME, ни XDG не заданы — возвращаем
-// пустые строки, чтобы вызывающий код сказал об этом прямо, а не молча писал
-// в несуществующий каталог.
+// Nothing is hardcoded: the package installs on a machine with a different $HOME
+// and possibly non-standard XDG variables. If neither is set, empty strings come
+// back so the caller can report it instead of silently writing to a directory
+// that may not exist.
 
 export interface PathEnv {
   HOME?: string
@@ -13,9 +13,9 @@ export interface PathEnv {
 }
 
 export interface ResolvedPaths {
-  /** Файл, куда панель пишет последнее выделение. */
+  /** File the pane writes the latest selection to. */
   state: string
-  /** Корень конфигурации opencode. */
+  /** The opencode config root. */
   configRoot: string
 }
 

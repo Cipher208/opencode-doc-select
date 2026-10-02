@@ -1,13 +1,13 @@
-// Плагин opencode: открывает файл в панели tmux и отдаёт то, что пользователь
-// выделил мышью.
+// OpenCode plugin: opens a file in a tmux pane and hands back exactly what the
+// user selected with the mouse.
 //
-// Инструменты:
-//   doc_open(path)  — открыть панель на файле
-//   doc_selection() — что сейчас выделено
+// Tools:
+//   doc_open(path)  - open a pane on a file
+//   doc_selection() - what is selected right now
 //
-// Экспорт обязан быть функцией, возвращающей объект хуков: экспорт объектом даёт
-// «Plugin export is not a function», и плагин молча выбрасывается без следа в логах,
-// кроме одной строки, которую надо уметь найти.
+// The export must be a function returning the hooks object: exporting a bare object
+// yields "Plugin export is not a function" and the plugin is dropped silently, with
+// a single log line left to find.
 
 import { tool } from "@opencode-ai/plugin"
 import { existsSync, readFileSync } from "node:fs"
@@ -16,9 +16,10 @@ import { spawnSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
 import { dirname, join } from "node:path"
 import { resolvePaths } from "./paths.ts"
+import { shQuote } from "./shell.ts"
 
-// CLI лежит рядом с плагином в том же каталоге src/, поэтому путь строится от
-// import.meta, а не от чужой домашней директории.
+// The CLI sits next to the plugin in the same src/ directory, so the path is built
+// from import.meta rather than from somebody's home directory.
 const CLI = join(dirname(fileURLToPath(import.meta.url)), "doc-select-cli.ts")
 
 export const DocSelect = async () => {
@@ -39,14 +40,17 @@ export const DocSelect = async () => {
         return JSON.stringify({ success: false, error: "не удалось определить путь к состоянию: задайте XDG_STATE_HOME или HOME" })
       }
 
-      // Ровно два позиционных аргумента: путь к файлу и путь к файлу состояния.
-      // Третий аргумент оболочка прочитала бы как путь к состоянию и записала бы
-      // выделение не туда — такое уже случалось.
-      const pane = spawnSync(
-        "tmux",
-        ["split-window", "-h", "-p", "60", "-P", "-F", "#{pane_id}", `bun run ${CLI} ${target} ${state}`],
-        { encoding: "utf8" },
-      )
+      // Exactly two positional arguments: the file path and the state file path.
+      // A third argument would be read as the state path and the selection would be
+      // written to the wrong file - which already happened once.
+      //
+      // All three values are quoted: tmux runs the string through sh, and a path
+      // containing a semicolon would otherwise become a second command. Confirmed
+      // end to end before the quoting was added.
+      const command = `bun run ${shQuote(CLI)} ${shQuote(target)} ${shQuote(state)}`
+      const pane = spawnSync("tmux", ["split-window", "-h", "-p", "60", "-P", "-F", "#{pane_id}", command], {
+        encoding: "utf8",
+      })
       if (pane.status !== 0) return JSON.stringify({ success: false, error: pane.stderr?.trim() || "tmux не ответил" })
       return JSON.stringify({ success: true, pane: pane.stdout.trim(), path: target })
     },

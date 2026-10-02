@@ -1,8 +1,8 @@
-// Панель выделения: показывает файл с номерами строк, ловит перетаскивание мышью
-// и при отпускании кнопки отдаёт выделенный текст в файл состояния.
+// Selection pane: renders a file with line numbers, catches a mouse drag
+// and writes the selected text to the state file when the button is released.
 //
-// Запуск:  bun run src/doc-select-cli.ts <файл> [состояние]
-// Мышь включается в режиме SGR (1006) — обычный режим не отдаёт номера строк и колонок.
+// Usage:  bun run src/doc-select-cli.ts <file> [state]
+// The mouse is enabled in SGR mode (1006) - ordinary mode reports no line or column.
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs"
 import { dirname } from "node:path"
@@ -74,7 +74,7 @@ try {
   process.stdin.setRawMode?.(true)
 } catch {}
 process.stdin.resume()
-// SGR-мышь: 1000 — обычные события кнопок, 1006 — координаты вместо байтовых смещений
+// SGR mouse: 1000 = normal button events, 1006 = coordinates instead of byte offsets
 process.stdout.write("\x1b[?1000h\x1b[?1006h")
 process.stdout.write("\x1b[?25l")
 
@@ -88,7 +88,7 @@ for await (const chunk of process.stdin as AsyncIterable<Buffer>) {
       if (end === -1) break
       const event = parseSgr(buffer.slice(0, end + 1))
       buffer = buffer.slice(end + 1)
-      if (!event || event.button & 64) continue // 64 — колесо, его пока игнорируем
+      if (!event || event.button & 64) continue // 64 = wheel, not handled yet
 
       const point = toLineCol(event.x, event.y)
       if (event.action === "press") {

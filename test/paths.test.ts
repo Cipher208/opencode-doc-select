@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test"
 import { resolvePaths } from "../src/paths.ts"
 
-// Пути не должны быть зашиты в чью-то домашнюю директорию: пакет ставится на чужую
-// машину, где $HOME другой, а XDG-переменные могут быть заданы нестандартно.
+// Paths must not be hardcoded to somebody's home directory: the package installs
+// on a machine with a different $HOME and possibly unusual XDG variables.
 test("state path follows XDG_STATE_HOME when it is set", () => {
   const p = resolvePaths({ HOME: "/home/user", XDG_STATE_HOME: "/custom/state" })
   expect(p.state).toBe("/custom/state/opencode/doc-select.json")
