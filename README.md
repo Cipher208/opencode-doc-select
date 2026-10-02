@@ -1,21 +1,53 @@
 # opencode-doc-select
 
-Read back the text the user selected with the mouse, inside an OpenCode session.
+> Your agent re-reads whole files because you cannot hand it a fragment.
+> Drag across the lines you mean in a tmux pane, release, and the agent gets
+> exactly those lines — no copy-paste, no re-reading, no guessing.
 
-The user asks the agent to open a file. Instead of the agent printing the file
-back as text, it opens the file in a tmux pane with line numbers. The user drags
-over the lines they care about, releases the mouse, and the agent reads exactly
-that text with `doc_selection` — no copy-paste, no re-reading of the whole file.
+[![CI](https://github.com/Cipher208/opencode-doc-select/actions/workflows/ci.yml/badge.svg)](https://github.com/Cipher208/opencode-doc-select/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/typescript-strict-blue.svg)](tsconfig.json)
 
 ```
 agent: doc_open("src/server.ts")
-  → pane %17, raw text with line numbers
+  → pane, raw text with line numbers
 
-user: drags with the mouse over lines 40–46, releases
+user: drags over lines 40–46, releases
 
 agent: doc_selection()
   → {"file":"src/server.ts","startLine":40,"endLine":46,"chars":214,"text":"..."}
 ```
+
+## Quick Start
+
+Add one line to `~/.config/opencode/opencode.json`:
+
+```json
+{ "plugin": ["opencode-doc-select"] }
+```
+
+Restart OpenCode, ask the agent to open a file, drag over what you mean, release.
+Requires `tmux` and `bun` on `PATH`.
+
+## Features
+
+- **Exact fragments.** Line range and text, not the file. Character count included.
+- **Line numbers in the pane**, so a selection reads as a citation.
+- **Shell-safe paths.** A filename containing `;`, `$` or a backtick is quoted
+  before it reaches tmux — see [SECURITY.md](SECURITY.md).
+- **No hardcoded paths.** State follows `XDG_STATE_HOME`, with a `$HOME` fallback.
+- **Two export shapes**, because neighbouring plugins differ and "the other one
+  works" is not evidence.
+
+## Writing a plugin like this
+
+Two contracts that are not in the OpenCode documentation, both learned the hard way:
+
+- A plugin's export must be a **function** returning the hooks object. A bare object
+  fails with `Plugin export is not a function` and the plugin is dropped silently.
+- An **empty log proves nothing**. A hook gated on a size threshold logs nothing when
+  output is small, so "loaded fine", "never loaded" and "loaded but never triggered"
+  look identical.
 
 ## Install
 
