@@ -10,7 +10,8 @@
   "files": [
     "src",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "test": "bun test",
@@ -21,7 +22,9 @@
     "opencode-plugin",
     "tmux",
     "terminal",
-    "mouse"
+    "mouse",
+    "typescript",
+    "bun"
   ],
   "license": "MIT",
   "peerDependencies": {
@@ -31,5 +34,17 @@
     "@opencode-ai/plugin": "1.18.34",
     "@types/bun": "^1.4.2",
     "typescript": "^5.9.3"
+  },
+  "author": "Cipher208",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cipher208/opencode-doc-select.git"
+  },
+  "homepage": "https://github.com/Cipher208/opencode-doc-select#readme",
+  "bugs": {
+    "url": "https://github.com/Cipher208/opencode-doc-select/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

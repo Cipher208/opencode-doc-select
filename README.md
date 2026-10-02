@@ -20,7 +20,8 @@ agent: doc_selection()
 
 ## Quick Start
 
-Add one line to `~/.config/opencode/opencode.json`:
+Copy the five files from `src/` into `~/.config/opencode/plugins/` (see
+[Install](#install)), then add one line to `~/.config/opencode/opencode.json`:
 
 ```json
 { "plugin": ["opencode-doc-select"] }
@@ -51,19 +52,18 @@ Two contracts that are not in the OpenCode documentation, both learned the hard 
 
 ## Install
 
+**Not yet on npm.** Until it is, install from the repository:
+
 ```bash
-opencode plugin add opencode-doc-select
+git clone https://github.com/Cipher208/opencode-doc-select
+cp opencode-doc-select/src/plugin.ts ~/.config/opencode/plugins/doc-select.ts
+cp opencode-doc-select/src/doc-select-cli.ts opencode-doc-select/src/doc-select-core.ts \
+   opencode-doc-select/src/paths.ts opencode-doc-select/src/shell.ts \
+   ~/.config/opencode/plugins/
 ```
 
-or add it to `plugin` in `~/.config/opencode/opencode.json`:
-
-```json
-{
-  "plugin": ["opencode-doc-select"]
-}
-```
-
-Restart OpenCode afterwards — plugins are loaded at startup.
+The plugin locates its CLI relative to its own file, so all five files must sit
+in the same directory.
 
 ### Manual install
 
