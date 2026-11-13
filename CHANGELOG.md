@@ -5,6 +5,28 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Ported to the OpenCode v2 plugin API.** The export is now
+  `Plugin.define({ id, setup })` with tools registered through
+  `ctx.tool.transform(editor => editor.add(...))`; the V1 form was a function
+  returning a hooks object, which v2 rejects with
+  `Plugin must export a default definition with an id and an effect or setup
+  function`.
+- `peerDependencies` moved from `@opencode-ai/plugin` to `@opencode/plugin`
+  (`>=2.2.7`).
+- Tool argument schemas are plain JSON Schema instead of the zod `tool.schema`
+  helper, and `execute` returns `{ content }` rather than a bare string.
+- README documents both export shapes, the `plugins` (plural) config key, and
+  the v2 restart requirement.
+
+### Added
+
+- Defensive returns for a missing `path` argument and a corrupt state file; both
+  previously threw.
+
 ## [0.1.0] - 2026-10-02
 
 - Published as `@cipher208/opencode-doc-select`. The package is scoped: npm's
